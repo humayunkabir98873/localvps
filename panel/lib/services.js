@@ -134,17 +134,18 @@ async function secureRoot() {
   const pw = getSecrets().mariadbRoot;
   const c = await mysql.createConnection({ socketPath: mariadbSocket(), user: 'root', password: '' });
   try {
-    // Distro installers may already have created root@127.0.0.1, root@::1 and root@<hostname> with no
-    // password, and older ones add anonymous users: password every root account and drop the anonymous ones.
-    const [accounts] = await c.query('SELECT User AS user, Host AS host FROM mysql.user');
-    for (const { host } of accounts.filter((a) => a.user === '')) await c.query("DROP USER ''@?", [host]);
-    const rootHosts = new Set(accounts.filter((a) => a.user === 'root').map((a) => a.host));
-    for (const host of ['localhost', '127.0.0.1', '::1']) {
-      if (!rootHosts.has(host)) await c.query("CREATE USER 'root'@? IDENTIFIED BY ?", [host, pw]);
-      rootHosts.add(host);
-    }
-    for (const host of rootHosts) {
-      await c.query("ALTER USER 'root'@? IDENTIFIED BY ?", [host, pw]);
+    // Distro installers may pre-create passwordless root@127.0.0.1, root@::1 and root@<hostname>, and older
+    // ones add anonymous users. Hostname accounts are not even loaded under skip-name-resolve (so ALTER/DROP
+    // USER fail on them): remove those rows directly, then password the three loopback root accounts.
+    const LOOPBACK = ['localhost', '127.0.0.1', '::1'];
+    const [tables] = await c.query("SELECT COUNT(*) AS n FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'mysql' AND TABLE_NAME = 'global_priv'");
+    const privTable = tables[0].n ? 'mysql.global_priv' : 'mysql.user';
+    await c.query(`DELETE FROM ${privTable} WHERE User = '' OR (User = 'root' AND Host NOT IN (?, ?, ?))`, LOOPBACK);
+    await c.query('FLUSH PRIVILEGES');
+    const [accounts] = await c.query("SELECT Host AS host FROM mysql.user WHERE User = 'root'");
+    const existing = new Set(accounts.map((a) => a.host));
+    for (const host of LOOPBACK) {
+      await c.query(existing.has(host) ? "ALTER USER 'root'@? IDENTIFIED BY ?" : "CREATE USER 'root'@? IDENTIFIED BY ?", [host, pw]);
       await c.query("GRANT ALL PRIVILEGES ON *.* TO 'root'@? WITH GRANT OPTION", [host]);
     }
     await c.query('FLUSH PRIVILEGES');
@@ -167,7 +168,10 @@ async function startMariadb() {
   if (!(await waitForPort(mariadbPort, '127.0.0.1', 30000))) {
     throw new Error('MariaDB did not start listening within 30s; see logs/mariadb.err');
   }
-  if (getSecrets().mariadbRootSet === false) await secureRoot();
+  if (getSecrets().mariadbRootSet === false) {
+    // Never leave an unsecured server running: stop it if locking down root fails.
+    try { await secureRoot(); } catch (err) { await killTree(pid).catch(() => {}); throw err; }
+  }
   return [pid];
 }
 
