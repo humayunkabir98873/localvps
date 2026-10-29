@@ -1,0 +1,16 @@
+# Dependencies and build output
+node_modules/
+build/
+dist/
+
+# Everything LocalVPS creates at runtime: binaries, databases, secrets, logs, sites, bundles
+runtime/
+data/
+conf/
+www/
+exports/
+
+# Local tooling and notes that are not part of the project
+.claude/
+xampp-re-analysis.md
+*.log

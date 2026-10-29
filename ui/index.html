@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="panel-token" content="__PANEL_TOKEN__">
+<title>LocalVPS</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/style.css">
+<script type="module" src="/app.js"></script>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect x="3" y="5" width="26" height="9" rx="2.5" fill="currentColor" opacity=".9"/><rect x="3" y="18" width="26" height="9" rx="2.5" fill="currentColor" opacity=".55"/><circle cx="8" cy="9.5" r="1.6" fill="var(--bg)"/><circle cx="8" cy="22.5" r="1.6" fill="var(--bg)"/></svg>
+      <div><strong>LocalVPS</strong><small id="host-name">local server</small></div>
+    </div>
+    <nav id="nav"></nav>
+    <div class="sidebar-foot">
+      <button class="ghost small" id="theme-toggle" type="button">Toggle theme</button>
+    </div>
+  </aside>
+  <main>
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Menu">☰</button>
+      <h1 id="page-title">Dashboard</h1>
+      <div class="topbar-actions">
+        <span class="pill" id="health-pill">…</span>
+        <button class="ghost" id="start-all" type="button">Start all</button>
+        <button class="ghost" id="stop-all" type="button">Stop all</button>
+      </div>
+    </header>
+    <section id="view" class="view"></section>
+  </main>
+</div>
+<div id="modal-root"></div>
+<div id="toasts" aria-live="polite"></div>
+</body>
+</html>

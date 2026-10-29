@@ -1,0 +1,84 @@
+name: Release
+
+# Push a tag like v0.2.0 to build Windows, Linux and macOS packages and publish them as a GitHub Release.
+# "Run workflow" (manual) builds the same packages as artifacts without publishing.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build (${{ matrix.name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: windows-x64
+            os: windows-latest
+          # The oldest supported runner keeps the glibc requirement of the compiled node-pty low.
+          - name: linux-x64
+            os: ubuntu-22.04
+          - name: macos-arm64
+            os: macos-15
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        # Compiles node-pty on Linux (no prebuilt binary there); Windows and macOS use its prebuilds.
+        run: npm ci --no-audit --no-fund
+
+      - name: Check the tag matches package.json
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $version"
+            exit 1
+          fi
+
+      - name: Build and smoke-test the package
+        id: build
+        run: npm run build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LocalVPS-${{ matrix.name }}
+          path: ${{ steps.build.outputs.archive }}
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: packages
+          merge-multiple: true
+
+      - name: Checksums
+        working-directory: packages
+        run: sha256sum LocalVPS-* | tee SHA256SUMS.txt
+
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" packages/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "LocalVPS $GITHUB_REF_NAME" \
+            --generate-notes
