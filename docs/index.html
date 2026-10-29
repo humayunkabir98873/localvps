@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LocalVPS: Free XAMPP Alternative for Windows, Mac &amp; Linux</title>
+<meta name="description" content="Free, open-source XAMPP alternative: nginx, PHP 8.2–8.5, MariaDB and Node.js on Windows, macOS and Linux, with one-click WordPress, Laravel and Next.js.">
+<link rel="canonical" href="https://humayunkabir98873.github.io/localvps/">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LocalVPS">
+<meta property="og:title" content="LocalVPS: Free XAMPP Alternative for Windows, Mac & Linux">
+<meta property="og:description" content="nginx, PHP 8.2–8.5, MariaDB and Node.js per site on name.localhost, with WordPress, Laravel and Next.js templates and one-click deploy to a real VPS.">
+<meta property="og:url" content="https://humayunkabir98873.github.io/localvps/">
+<meta property="og:image" content="https://humayunkabir98873.github.io/localvps/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="LocalVPS control panel: a free XAMPP alternative for Windows, macOS and Linux">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LocalVPS: Free XAMPP Alternative for Windows, Mac & Linux">
+<meta name="twitter:description" content="nginx, PHP 8.2–8.5, MariaDB and Node.js per site, with WordPress, Laravel and Next.js templates and one-click VPS deploy.">
+<meta name="twitter:image" content="https://humayunkabir98873.github.io/localvps/og.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "LocalVPS",
+  "description": "Free, open-source local PHP development server and XAMPP alternative with nginx, PHP, MariaDB and Node.js, a web control panel, and one-click export to a Linux VPS.",
+  "url": "https://humayunkabir98873.github.io/localvps/",
+  "downloadUrl": "https://github.com/humayunkabir98873/localvps/releases/latest",
+  "applicationCategory": "DeveloperApplication",
+  "applicationSubCategory": "Local web development server",
+  "operatingSystem": "Windows 10, Windows 11, macOS, Linux",
+  "softwareVersion": "0.1.0",
+  "license": "https://opensource.org/licenses/MIT",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "sameAs": ["https://github.com/humayunkabir98873/localvps"],
+  "featureList": [
+    "nginx, PHP 8.2 to 8.5, MariaDB and Node.js",
+    "Per-site PHP version and name.localhost hostname",
+    "One-click WordPress, Laravel and Next.js sites",
+    "Database manager and SQL console",
+    "In-browser terminal",
+    "Export or SSH deploy to a Linux VPS with Let's Encrypt HTTPS"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Is LocalVPS free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. LocalVPS is open source under the MIT license, with no paid tier and no account required." } },
+    { "@type": "Question", "name": "Is there an XAMPP for Mac with PHP 8.4?", "acceptedAnswer": { "@type": "Answer", "text": "The official XAMPP download page no longer lists macOS, and the newest macOS build on its SourceForge mirror is PHP 8.2.4 from April 2023. LocalVPS runs on Apple Silicon Macs with current PHP versions installed through Homebrew." } },
+    { "@type": "Question", "name": "Does LocalVPS work on Linux?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It supports Ubuntu, Debian and other apt systems with PHP 8.2 to 8.5, and Fedora (dnf) and Arch (pacman) with their default PHP. Sites run on port 8080 by default so no root is needed." } },
+    { "@type": "Question", "name": "Can I use it without internet?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, once the stack is installed. Internet is only needed to download components and site templates such as WordPress, Laravel or Next.js." } },
+    { "@type": "Question", "name": "Which is better: WAMP, XAMPP or LocalVPS?", "acceptedAnswer": { "@type": "Answer", "text": "WAMP and XAMPP bundle Apache with one PHP version. LocalVPS uses nginx, gives every site its own PHP version and hostname, and can export the site to a real server. Pick the one that matches how you deploy." } },
+    { "@type": "Question", "name": "How do I move my sites from XAMPP to LocalVPS?", "acceptedAnswer": { "@type": "Answer", "text": "Create a Blank PHP site, copy your htdocs project into www/<site>/public, and import your .sql dump on the Databases page. The migration guide covers WordPress URLs and database settings." } }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="favicon.svg" alt="" width="28" height="28">LocalVPS</a>
+    <nav class="top" aria-label="Main">
+      <a href="./" aria-current="page">Home</a>
+      <a href="xampp-for-mac/">Mac</a>
+      <a href="xampp-for-linux/">Linux</a>
+      <a href="migrate-from-xampp/">Move from XAMPP</a>
+      <a href="https://github.com/humayunkabir98873/localvps">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <p class="eyebrow">Free &amp; open source · MIT</p>
+    <h1>The free XAMPP alternative for Windows, macOS and Linux</h1>
+    <p class="lede">LocalVPS runs <strong>nginx, PHP 8.2–8.5, MariaDB and Node.js</strong> for you, gives every project its own address like <code>my-app.localhost</code>, and ships it to a real VPS when you're ready. A modern control panel replaces the config files.</p>
+    <div class="buttons">
+      <a class="btn" href="https://github.com/humayunkabir98873/localvps/releases/latest">Download for Windows, Mac or Linux</a>
+      <a class="btn ghost" href="https://github.com/humayunkabir98873/localvps">View on GitHub</a>
+    </div>
+    <p class="small">Windows 10/11 x64 · macOS on Apple Silicon · Linux x64 (Ubuntu 22.04+, Debian 12+, Fedora, Arch)</p>
+  </section>
+
+  <section aria-labelledby="features">
+    <h2 id="features">Everything a local PHP server should do in 2026</h2>
+    <div class="grid">
+      <div class="card"><h3>One hostname per site</h3><p>Every project gets <code>name.localhost</code> automatically. There are no hosts-file edits, no vhost files, and no admin rights needed.</p></div>
+      <div class="card"><h3>PHP version per site</h3><p>Install PHP 8.2, 8.3, 8.4 and 8.5 side by side and pick one for each site. Switch with a dropdown.</p></div>
+      <div class="card"><h3>WordPress, Laravel, Next.js</h3><p>One-click templates create the files, the database and the config, so <code>wp-config.php</code> and <code>.env</code> are ready to use.</p></div>
+      <div class="card"><h3>Database manager</h3><p>Create databases and users, run SQL, and import or export <code>.sql</code> dumps. MariaDB gets a random root password, not an empty one.</p></div>
+      <div class="card"><h3>Terminal in the browser</h3><p>A real shell in each site's folder with <code>php</code>, <code>composer</code>, <code>npm</code> and <code>mariadb</code> on the PATH, plus quick commands for artisan and npm.</p></div>
+      <div class="card"><h3>Deploy to a real VPS</h3><p>Export a bundle, or deploy over SSH to Ubuntu or Debian. The script installs nginx, PHP and MariaDB on the server, imports your database and can set up HTTPS.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="compare">
+    <h2 id="compare">LocalVPS vs XAMPP</h2>
+    <p>XAMPP made local PHP easy for twenty years. Here is how the two compare today. The XAMPP facts are from apachefriends.org and its SourceForge downloads, as of October 2026.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>XAMPP</th><th>LocalVPS</th></tr></thead>
+        <tbody>
+          <tr><td>Windows</td><td class="yes">PHP 8.3, 8.4, 8.5 builds</td><td class="yes">PHP 8.2–8.5, several side by side</td></tr>
+          <tr><td>macOS</td><td class="warn">Not on the download page; newest build is PHP 8.2.4 (April 2023)</td><td class="yes">Apple Silicon, current PHP via Homebrew</td></tr>
+          <tr><td>Linux</td><td class="warn">Not on the download page; newest build is PHP 8.2.12 (November 2023)</td><td class="yes">apt, dnf or pacman; PHP 8.2–8.5 on Debian/Ubuntu</td></tr>
+          <tr><td>Web server</td><td>Apache</td><td>nginx, as on most production VPSs</td></tr>
+          <tr><td>Sites</td><td>Folders under one <code>localhost</code>; vhosts by hand</td><td>Automatic <code>name.localhost</code> per site</td></tr>
+          <tr><td>PHP per site</td><td>One version for everything</td><td>Choose per site</td></tr>
+          <tr><td>App templates</td><td>Install by hand</td><td>WordPress, Laravel, Next.js</td></tr>
+          <tr><td>Database defaults</td><td>phpMyAdmin auto-login as root, empty password</td><td>Random root password; one user per site</td></tr>
+          <tr><td>Going live</td><td>Not included</td><td>Export bundle or SSH deploy with Let's Encrypt</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="how">
+    <h2 id="how">Up and running in three steps</h2>
+    <ol class="steps">
+      <li><strong>Download and start.</strong> Unzip and double-click <code>LocalVPS.exe</code> on Windows, or run <code>./localvps</code> on macOS and Linux. The control panel opens in your browser.</li>
+      <li><strong>Install the stack.</strong> Click <em>Install recommended stack</em>. Windows gets official builds. Mac gets them from Homebrew, and Linux from your package manager (you confirm the sudo command).</li>
+      <li><strong>Create a site.</strong> Pick Blank PHP, WordPress, Laravel or Next.js, then open <code>http://your-site.localhost</code>.</li>
+    </ol>
+    <p>Moving existing projects over? Follow the <a href="migrate-from-xampp/">XAMPP to LocalVPS migration guide</a>.</p>
+  </section>
+
+  <section aria-labelledby="faq">
+    <h2 id="faq">Frequently asked questions</h2>
+    <details><summary>Is LocalVPS free?</summary><p>Yes. It's open source under the MIT license, with no paid tier and no account required.</p></details>
+    <details><summary>Is there an XAMPP for Mac with PHP 8.4?</summary><p>The official XAMPP download page no longer lists macOS, and the newest macOS build on its SourceForge mirror is PHP 8.2.4 from April 2023. LocalVPS runs on Apple Silicon Macs with current PHP from Homebrew. See <a href="xampp-for-mac/">LocalVPS on Mac</a>.</p></details>
+    <details><summary>Does LocalVPS work on Linux?</summary><p>Yes: Ubuntu, Debian and other apt systems with PHP 8.2–8.5, plus Fedora (dnf) and Arch (pacman) with their default PHP. Sites use port 8080 by default, so no root is needed. See <a href="xampp-for-linux/">LocalVPS on Linux</a>.</p></details>
+    <details><summary>Can I use it without internet?</summary><p>Yes, once the stack is installed. Internet is only needed to download components and site templates.</p></details>
+    <details><summary>Which is better: WAMP, XAMPP or LocalVPS?</summary><p>WAMP and XAMPP bundle Apache with a single PHP version. LocalVPS uses nginx, gives each site its own PHP version and hostname, and exports sites to a real server. Pick what matches how you deploy.</p></details>
+    <details><summary>Can I run XAMPP and LocalVPS at the same time?</summary><p>Yes, if they use different ports. Set LocalVPS's HTTP and MariaDB ports in Settings, for example 8080 and 3307.</p></details>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <nav aria-label="Footer">
+      <a href="./">Home</a><a href="xampp-for-mac/">LocalVPS on Mac</a><a href="xampp-for-linux/">LocalVPS on Linux</a><a href="migrate-from-xampp/">Move from XAMPP</a>
+      <a href="https://github.com/humayunkabir98873/localvps/releases">Releases</a><a href="https://github.com/humayunkabir98873/localvps">Source</a>
+    </nav>
+    <p>LocalVPS is free software under the MIT license. XAMPP is a trademark of Apache Friends. LocalVPS is an independent project and isn't affiliated with or endorsed by Apache Friends; XAMPP is mentioned only for comparison.</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://humayunkabir98873.github.io/localvps/sitemap.xml

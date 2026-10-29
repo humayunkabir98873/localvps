@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XAMPP for Mac Alternative with PHP 8.4 &amp; nginx | LocalVPS</title>
+<meta name="description" content="XAMPP's macOS build stopped at PHP 8.2.4 in 2023. LocalVPS is a free alternative for Apple Silicon Macs with PHP 8.2–8.5, nginx, MariaDB and Node.js.">
+<link rel="canonical" href="https://humayunkabir98873.github.io/localvps/xampp-for-mac/">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../style.css">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="LocalVPS">
+<meta property="og:title" content="XAMPP for Mac alternative with PHP 8.4, nginx and MariaDB">
+<meta property="og:description" content="A free, open-source local PHP server for Apple Silicon Macs, with current PHP from Homebrew.">
+<meta property="og:url" content="https://humayunkabir98873.github.io/localvps/xampp-for-mac/">
+<meta property="og:image" content="https://humayunkabir98873.github.io/localvps/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "XAMPP for Mac alternative with PHP 8.4, nginx and MariaDB",
+  "about": "Running a local PHP development server on macOS",
+  "dateModified": "2026-10-29",
+  "author": { "@type": "Organization", "name": "LocalVPS", "url": "https://github.com/humayunkabir98873/localvps" },
+  "mainEntityOfPage": "https://humayunkabir98873.github.io/localvps/xampp-for-mac/"
+}
+</script>
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="../"><img src="../favicon.svg" alt="" width="28" height="28">LocalVPS</a>
+    <nav class="top" aria-label="Main">
+      <a href="../">Home</a><a href="./" aria-current="page">Mac</a><a href="../xampp-for-linux/">Linux</a><a href="../migrate-from-xampp/">Move from XAMPP</a><a href="https://github.com/humayunkabir98873/localvps">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <p class="eyebrow">macOS · Apple Silicon</p>
+    <h1>An XAMPP for Mac alternative with PHP 8.4, nginx and MariaDB</h1>
+    <p class="lede">If you searched for "XAMPP for Mac" and found old PHP versions, you're not imagining it. LocalVPS is a free, open-source local server for Apple Silicon Macs with current PHP, one address per site, and a control panel in your browser.</p>
+    <div class="buttons">
+      <a class="btn" href="https://github.com/humayunkabir98873/localvps/releases/latest">Download for macOS (Apple Silicon)</a>
+      <a class="btn ghost" href="../migrate-from-xampp/">Move projects from XAMPP</a>
+    </div>
+  </section>
+
+  <h2>What happened to XAMPP on macOS?</h2>
+  <p>As of October 2026, the download page on apachefriends.org offers Windows builds only. The newest macOS installer in XAMPP's SourceForge folder is <strong>PHP 8.2.4</strong>, published in April 2023. PHP 8.2 receives security fixes only until the end of 2026, and PHP 8.3, 8.4 and 8.5 have no macOS build.</p>
+  <p>XAMPP for Windows is still updated. The Mac and Linux editions appear to have stopped.</p>
+
+  <h2>How LocalVPS runs on a Mac</h2>
+  <p>Apple Silicon needs native arm64 binaries, and Homebrew already maintains them for PHP, nginx and MariaDB. LocalVPS installs those formulae with <code>brew install</code> from its control panel. It then runs its <em>own</em> copies with its own configs, ports and data folder, so it doesn't touch any <code>brew services</code> setup you already have.</p>
+  <ul>
+    <li><strong>PHP:</strong> <code>php</code> (8.5), <code>php@8.4</code>, <code>php@8.3</code> and <code>php@8.2</code> side by side, each as its own php-fpm pool. You choose one per site.</li>
+    <li><strong>Web server:</strong> nginx serves every site at <code>http://name.localhost</code>. macOS allows port 80 without root, so URLs stay clean.</li>
+    <li><strong>Database:</strong> MariaDB LTS (11.8 by default) with a generated root password and one user per site.</li>
+    <li><strong>Node.js:</strong> the official nodejs.org build (SHA-256 checked) for Next.js sites and npm.</li>
+  </ul>
+
+  <h2>Install</h2>
+  <ol class="steps">
+    <li>Install <a href="https://brew.sh">Homebrew</a> if you don't have it.</li>
+    <li>Download <code>LocalVPS-…-macos-arm64.tar.gz</code> from <a href="https://github.com/humayunkabir98873/localvps/releases/latest">Releases</a> and extract it.</li>
+    <li>In Terminal, in that folder:
+<pre><code>xattr -dr com.apple.quarantine .   # first run only: the build is not notarized
+./localvps</code></pre></li>
+    <li>In the panel that opens, click <strong>Install recommended stack</strong>, then create a site.</li>
+  </ol>
+  <p class="note">Intel Macs: there's no prebuilt Intel package yet. Run LocalVPS from source instead (<code>git clone</code>, <code>npm install</code>, <code>./start.sh</code>); it works the same.</p>
+
+  <h2>Questions</h2>
+  <details><summary>Do I need to uninstall XAMPP first?</summary><p>No. If XAMPP's Apache or MySQL is running, change LocalVPS's ports in Settings (e.g. 8080 and 3307) or stop XAMPP.</p></details>
+  <details><summary>Will it change my existing Homebrew services?</summary><p>No. LocalVPS starts its own processes with its own config and data under its folder. Formulae it installs are shared with Homebrew like any other.</p></details>
+  <details><summary>Does Valet or Herd conflict with it?</summary><p>Only on ports. Valet uses dnsmasq for <code>.test</code>; LocalVPS uses <code>.localhost</code>, which macOS browsers already resolve to your machine.</p></details>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <nav aria-label="Footer"><a href="../">Home</a><a href="./">LocalVPS on Mac</a><a href="../xampp-for-linux/">LocalVPS on Linux</a><a href="../migrate-from-xampp/">Move from XAMPP</a><a href="https://github.com/humayunkabir98873/localvps">Source</a></nav>
+    <p>XAMPP is a trademark of Apache Friends. LocalVPS is an independent project and isn't affiliated with or endorsed by Apache Friends.</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,8 +1,32 @@
-# LocalVPS
+# LocalVPS: a free, open-source XAMPP alternative for Windows, macOS and Linux
 
-A local server stack for **Windows, macOS and Linux**, in the spirit of XAMPP, with a modern web control panel. It gives you per-site PHP versions, one-click WordPress, Laravel and Next.js sites, a database manager, an in-browser terminal, and one-click export to a real Linux VPS.
+**LocalVPS** is a local PHP development server with a modern web control panel. It installs **nginx, PHP (8.2 to 8.5), MariaDB and Node.js** and runs them for you. Every site gets its own address like `http://my-app.localhost`, with:
 
-LocalVPS runs real nginx, PHP and MariaDB processes, each with its own configs, ports and data. Every site gets its own hostname (`http://name.localhost`), so there are no hosts-file edits and no admin rights needed.
+- one-click **WordPress**, **Laravel** and **Next.js** templates
+- a database manager
+- an in-browser terminal
+- one-click export to a real Linux VPS
+
+If you came here looking for **XAMPP for Mac**, **XAMPP for Linux**, or an **XAMPP alternative with current PHP versions**, this is it.
+
+**[Website](https://humayunkabir98873.github.io/localvps/)** · **[Download](https://github.com/humayunkabir98873/localvps/releases/latest)** · **[Moving from XAMPP](https://humayunkabir98873.github.io/localvps/migrate-from-xampp/)**
+
+## Why LocalVPS instead of XAMPP?
+
+| | XAMPP (as of October 2026) | LocalVPS |
+|---|---|---|
+| Windows | ✅ PHP 8.3 / 8.4 / 8.5 | ✅ PHP 8.2 – 8.5, several versions side by side |
+| macOS | ⚠️ No longer on the download page; last build PHP 8.2.4 (April 2023) | ✅ Apple Silicon, current PHP via Homebrew |
+| Linux | ⚠️ No longer on the download page; last build PHP 8.2.12 (November 2023) | ✅ apt, dnf or pacman; PHP 8.2 – 8.5 on Debian/Ubuntu |
+| Web server | Apache | nginx (the same as most production VPSs) |
+| One site per hostname | Manual vhosts and hosts-file edits | Automatic `name.localhost`, no admin rights |
+| PHP version per site | One PHP for everything | Pick per site |
+| WordPress / Laravel / Next.js | Install by hand | One-click templates |
+| Database admin defaults | phpMyAdmin logs in as root with an empty password | Random root password; separate user per site |
+| Ship to a server | Not included | Export bundle or SSH deploy with HTTPS (Let's Encrypt) |
+| Bundled extras | FileZilla FTP 0.9, Mercury Mail, Tomcat 8.5 | Only what you use: nginx, PHP, MariaDB, Node.js |
+
+How LocalVPS works: it runs real nginx, PHP and MariaDB processes, each with its own configs, ports and data, inside its own folder. There are no hosts-file edits and nothing to configure by hand.
 
 ## Download
 
@@ -124,6 +148,31 @@ scripts/        Package builds
 runtime/ data/ conf/ www/ exports/   created at runtime (git-ignored)
 ```
 
+## FAQ
+
+**Is LocalVPS free?**
+Yes. It's open source under the MIT license, with no paid tier and no account.
+
+**Is there an XAMPP for Mac with PHP 8.4?**
+The official XAMPP download page no longer lists macOS; the newest macOS build on its SourceForge mirror is PHP 8.2.4 from April 2023. LocalVPS runs on Apple Silicon Macs with current PHP versions installed through Homebrew.
+
+**Does it work on Linux?**
+Yes. LocalVPS supports Ubuntu, Debian and other apt systems with PHP 8.2–8.5, plus Fedora (dnf) and Arch (pacman) with their default PHP. Sites run on port 8080 by default, so no root is needed.
+
+**Can I use it without internet?**
+Yes, once the stack is installed. Internet is only needed to download components and site templates (WordPress, Laravel, Next.js).
+
+**Which is better, WAMP, XAMPP or LocalVPS?**
+WAMP and XAMPP bundle Apache with one PHP version. LocalVPS uses nginx and gives every site its own PHP version and hostname, then exports the site to a real server. Pick whichever matches how you deploy.
+
+**How do I move my sites from XAMPP?**
+Create a Blank PHP site, copy your `htdocs` project into `www/<site>/public`, and import your `.sql` dump on the Databases page. The [migration guide](https://humayunkabir98873.github.io/localvps/migrate-from-xampp/) has the details.
+
+**Can I run XAMPP and LocalVPS at the same time?**
+Yes, if they use different ports. Change LocalVPS's HTTP and MariaDB ports in Settings, e.g. 8080 and 3307.
+
 ## License
 
 [MIT](LICENSE)
+
+XAMPP is a trademark of Apache Friends. LocalVPS is an independent project and isn't affiliated with or endorsed by Apache Friends; XAMPP is mentioned only for comparison.

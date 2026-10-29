@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Migrate from XAMPP to LocalVPS: PHP, WordPress, Laravel</title>
+<meta name="description" content="Step-by-step guide to moving XAMPP projects to LocalVPS: export MySQL databases, copy htdocs, fix WordPress URLs and Laravel .env, and run both side by side.">
+<link rel="canonical" href="https://humayunkabir98873.github.io/localvps/migrate-from-xampp/">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../style.css">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="LocalVPS">
+<meta property="og:title" content="How to migrate from XAMPP to LocalVPS">
+<meta property="og:description" content="Move htdocs projects and MySQL databases from XAMPP, including WordPress and Laravel.">
+<meta property="og:url" content="https://humayunkabir98873.github.io/localvps/migrate-from-xampp/">
+<meta property="og:image" content="https://humayunkabir98873.github.io/localvps/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "How to migrate from XAMPP to LocalVPS",
+  "about": "Moving PHP, WordPress and Laravel projects and MySQL databases from XAMPP",
+  "dateModified": "2026-10-29",
+  "author": { "@type": "Organization", "name": "LocalVPS", "url": "https://github.com/humayunkabir98873/localvps" },
+  "mainEntityOfPage": "https://humayunkabir98873.github.io/localvps/migrate-from-xampp/"
+}
+</script>
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="../"><img src="../favicon.svg" alt="" width="28" height="28">LocalVPS</a>
+    <nav class="top" aria-label="Main">
+      <a href="../">Home</a><a href="../xampp-for-mac/">Mac</a><a href="../xampp-for-linux/">Linux</a><a href="./" aria-current="page">Move from XAMPP</a><a href="https://github.com/humayunkabir98873/localvps">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <p class="eyebrow">Guide</p>
+    <h1>How to migrate from XAMPP to LocalVPS</h1>
+    <p class="lede">Each XAMPP project becomes its own LocalVPS site with its own address, PHP version and database user. Plan about five minutes per project. You can keep XAMPP installed while you move.</p>
+  </section>
+
+  <h2>Before you start: avoid port clashes</h2>
+  <p>XAMPP's Apache uses port 80 and its MySQL uses 3306, the same as LocalVPS on Windows and macOS. Either stop Apache and MySQL in the XAMPP Control Panel, or in LocalVPS go to <strong>Settings</strong> and set the HTTP port to <code>8080</code> and the MariaDB port to <code>3307</code>.</p>
+
+  <h2>1. Export each database from XAMPP</h2>
+  <p>In XAMPP's phpMyAdmin, open the database and use <em>Export → Quick → SQL</em>. Or use the command line:</p>
+<pre><code># Windows
+C:\xampp\mysql\bin\mysqldump.exe -u root --routines --triggers my_db &gt; my_db.sql
+# Linux
+/opt/lampp/bin/mysqldump -u root --routines --triggers my_db &gt; my_db.sql</code></pre>
+  <p>XAMPP's MySQL is MariaDB, so the dump imports into LocalVPS's MariaDB unchanged.</p>
+
+  <h2>2. Create the site in LocalVPS</h2>
+  <ol class="steps">
+    <li>Open <strong>Sites → New site</strong>, choose <strong>Blank PHP</strong>, name it (e.g. <code>shop</code>), and tick <em>Create a MySQL database and user</em>.</li>
+    <li>Copy your project from <code>C:\xampp\htdocs\shop</code> (or <code>/opt/lampp/htdocs/shop</code>) into <code>www/shop/public</code>, replacing the sample <code>index.php</code>.</li>
+    <li>If the project's web root is a subfolder (Laravel's <code>public/</code>, for example), copy the whole project into <code>www/shop</code> and set <strong>Web root</strong> in the site's Settings.</li>
+  </ol>
+
+  <h2>3. Import the database</h2>
+  <p>On the <strong>Databases</strong> page, select the site's database (<code>shop_db</code>), click the import button and choose <code>my_db.sql</code>. The site's credentials are shown in its Settings.</p>
+
+  <h2>4. Point the app at the new database</h2>
+  <ul>
+    <li><strong>Plain PHP:</strong> use host <code>127.0.0.1</code> and the site's user and password instead of <code>root</code> with no password. LocalVPS also writes them to <code>www/shop/db.local.php</code>.</li>
+    <li><strong>Laravel:</strong> update <code>DB_HOST</code>, <code>DB_DATABASE</code>, <code>DB_USERNAME</code> and <code>DB_PASSWORD</code> in <code>.env</code>, and set <code>APP_URL=http://shop.localhost</code>.</li>
+    <li><strong>WordPress:</strong> update <code>DB_NAME</code>, <code>DB_USER</code>, <code>DB_PASSWORD</code> and <code>DB_HOST</code> in <code>wp-config.php</code>, then replace the old URL in the database. In the site's Terminal:
+<pre><code>curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+php wp-cli.phar --path=public search-replace "http://localhost/shop" "http://shop.localhost" --all-tables</code></pre></li>
+  </ul>
+
+  <h2>5. Open it</h2>
+  <p>Visit <code>http://shop.localhost</code> (or <code>http://shop.localhost:8080</code> on Linux or if you changed the port). If PHP errors appear, check <strong>Logs → php-8.4.log</strong>. Older projects may need a different PHP version, which you can pick in the site's Settings.</p>
+
+  <h2>Common differences from XAMPP</h2>
+  <details><summary>My .htaccess rewrites don't work</summary><p>LocalVPS uses nginx, which ignores <code>.htaccess</code>. Front-controller apps (Laravel, WordPress, most frameworks) work out of the box. Custom rules go in the site's <em>Extra nginx directives</em>.</p></details>
+  <details><summary>Where is phpMyAdmin?</summary><p>The Databases page covers the everyday tasks: create, drop, SQL console, import and export. If you prefer phpMyAdmin, create a Blank PHP site and unzip phpMyAdmin into its <code>public</code> folder.</p></details>
+  <details><summary>Sendmail and FTP are missing</summary><p>LocalVPS leaves out XAMPP's mail and FTP servers. For mail testing, point your app's SMTP settings at a tool like Mailpit.</p></details>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <nav aria-label="Footer"><a href="../">Home</a><a href="../xampp-for-mac/">LocalVPS on Mac</a><a href="../xampp-for-linux/">LocalVPS on Linux</a><a href="./">Move from XAMPP</a><a href="https://github.com/humayunkabir98873/localvps">Source</a></nav>
+    <p>XAMPP is a trademark of Apache Friends. LocalVPS is an independent project and isn't affiliated with or endorsed by Apache Friends.</p>
+  </div>
+</footer>
+</body>
+</html>

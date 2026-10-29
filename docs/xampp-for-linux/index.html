@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XAMPP for Linux Alternative: PHP 8.4 &amp; nginx | LocalVPS</title>
+<meta name="description" content="XAMPP for Linux stopped at PHP 8.2 in 2023. LocalVPS is a free alternative for Ubuntu, Debian, Fedora and Arch with PHP 8.2–8.5, nginx, MariaDB and Node.js.">
+<link rel="canonical" href="https://humayunkabir98873.github.io/localvps/xampp-for-linux/">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../style.css">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="LocalVPS">
+<meta property="og:title" content="XAMPP for Linux alternative with PHP 8.4, nginx and MariaDB">
+<meta property="og:description" content="A free, open-source local PHP server for Ubuntu, Debian, Fedora and Arch.">
+<meta property="og:url" content="https://humayunkabir98873.github.io/localvps/xampp-for-linux/">
+<meta property="og:image" content="https://humayunkabir98873.github.io/localvps/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "XAMPP for Linux alternative with PHP 8.4, nginx and MariaDB",
+  "about": "Running a local PHP development server on Linux",
+  "dateModified": "2026-10-29",
+  "author": { "@type": "Organization", "name": "LocalVPS", "url": "https://github.com/humayunkabir98873/localvps" },
+  "mainEntityOfPage": "https://humayunkabir98873.github.io/localvps/xampp-for-linux/"
+}
+</script>
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="../"><img src="../favicon.svg" alt="" width="28" height="28">LocalVPS</a>
+    <nav class="top" aria-label="Main">
+      <a href="../">Home</a><a href="../xampp-for-mac/">Mac</a><a href="./" aria-current="page">Linux</a><a href="../migrate-from-xampp/">Move from XAMPP</a><a href="https://github.com/humayunkabir98873/localvps">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <p class="eyebrow">Linux · Ubuntu · Debian · Fedora · Arch</p>
+    <h1>An XAMPP for Linux alternative with PHP 8.4, nginx and MariaDB</h1>
+    <p class="lede">LocalVPS gives Linux developers what XAMPP's <code>lampp</code> used to: one folder, one control panel, every site on its own <code>name.localhost</code> address. It uses your distribution's maintained packages and current PHP.</p>
+    <div class="buttons">
+      <a class="btn" href="https://github.com/humayunkabir98873/localvps/releases/latest">Download for Linux x64</a>
+      <a class="btn ghost" href="../migrate-from-xampp/">Move projects from XAMPP</a>
+    </div>
+  </section>
+
+  <h2>Where XAMPP for Linux stands</h2>
+  <p>As of October 2026, apachefriends.org no longer lists a Linux download. The newest <code>xampp-linux-x64</code> installer in its SourceForge folder is <strong>PHP 8.2.12</strong> from November 2023. It ships its own copies of Apache, OpenSSL and MySQL libraries under <code>/opt/lampp</code>, which your distribution never updates.</p>
+
+  <h2>How LocalVPS does it differently</h2>
+  <p>Instead of bundling its own binaries, LocalVPS uses the nginx, php-fpm and MariaDB packages your distribution keeps patched. Then it runs <em>its own</em> instances of them, as your user, with its own configs, ports and data folder.</p>
+  <ul>
+    <li><strong>Debian, Ubuntu, Mint, Pop!_OS (apt):</strong> PHP 8.2, 8.3, 8.4 and 8.5 side by side via the ondrej/php PPA or packages.sury.org.</li>
+    <li><strong>Fedora (dnf) and Arch (pacman):</strong> the distribution's default PHP.</li>
+    <li><strong>No root at runtime:</strong> sites use port 8080 by default, because Linux reserves ports below 1024 for root.</li>
+    <li><strong>No surprise services:</strong> the install command switches off the system-wide nginx, MariaDB and php-fpm services so they don't hold ports 80 and 3306.</li>
+    <li><strong>Node.js:</strong> the official nodejs.org build (SHA-256 checked) for Next.js and npm.</li>
+  </ul>
+
+  <h2>Install</h2>
+  <ol class="steps">
+    <li>Download <code>LocalVPS-…-linux-x64.tar.gz</code> from <a href="https://github.com/humayunkabir98873/localvps/releases/latest">Releases</a> (needs glibc 2.35+, e.g. Ubuntu 22.04 or Debian 12 and newer).</li>
+    <li>Extract and start it:
+<pre><code>tar -xzf LocalVPS-*-linux-x64.tar.gz
+cd LocalVPS
+./localvps</code></pre></li>
+    <li>Click <strong>Install recommended stack</strong>. LocalVPS types one <code>sudo</code> command into its built-in terminal, for example:
+<pre><code>sudo apt-get install -y nginx php8.4-fpm php8.4-mysql … mariadb-server
+sudo systemctl disable --now nginx php8.4-fpm mariadb</code></pre>
+      Press Enter, type your password, then click <strong>Detect installed</strong>.</li>
+    <li>Create a site and open <code>http://your-site.localhost:8080</code>.</li>
+  </ol>
+  <p class="note">Want clean URLs on port 80? Allow it once with <code>sudo setcap cap_net_bind_service=+ep /usr/sbin/nginx</code> and set the HTTP port to 80 in Settings.</p>
+
+  <h2>Questions</h2>
+  <details><summary>Why doesn't LocalVPS bundle its own PHP like XAMPP did?</summary><p>Distribution packages get security updates through your normal system updates. A bundled copy goes stale, as XAMPP's Linux build did.</p></details>
+  <details><summary>Can I keep using /opt/lampp?</summary><p>Yes, on different ports. Or move your projects over: copy <code>/opt/lampp/htdocs/project</code> into a LocalVPS site and import the database. See the <a href="../migrate-from-xampp/">migration guide</a>.</p></details>
+  <details><summary>Does it work in WSL?</summary><p>It should: WSL runs a normal Ubuntu or Debian, and the Linux package is built for those. It hasn't been tested there yet. On Windows itself, the Windows package needs no WSL at all.</p></details>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <nav aria-label="Footer"><a href="../">Home</a><a href="../xampp-for-mac/">LocalVPS on Mac</a><a href="./">LocalVPS on Linux</a><a href="../migrate-from-xampp/">Move from XAMPP</a><a href="https://github.com/humayunkabir98873/localvps">Source</a></nav>
+    <p>XAMPP is a trademark of Apache Friends. LocalVPS is an independent project and isn't affiliated with or endorsed by Apache Friends.</p>
+  </div>
+</footer>
+</body>
+</html>
