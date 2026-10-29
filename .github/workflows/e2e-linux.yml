@@ -1,0 +1,39 @@
+name: Linux end-to-end
+
+# Builds the Linux package and runs it like a user would on Ubuntu (real systemd, normal user with sudo):
+# installs nginx/PHP/MariaDB with the panel's own commands and creates every site type.
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['docs/**', '**.md']
+  pull_request:
+    paths-ignore: ['docs/**', '**.md']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund
+
+      - name: Build the Linux package
+        id: build
+        run: npm run build
+
+      # The runner image ships MySQL; stop it so MariaDB's packages and LocalVPS get port 3306.
+      - name: Free port 3306
+        run: sudo systemctl stop mysql || true
+
+      - name: End-to-end test
+        run: bash tests/e2e-linux.sh "${{ steps.build.outputs.archive }}"
