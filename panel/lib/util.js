@@ -131,6 +131,8 @@ export function tailFile(file, lines = 200) {
 // One tasklist/ps call gives liveness, image name and resident memory for every PID.
 // tasklist.exe takes a few hundred ms, so concurrent callers within a second share one result.
 let tableCache = { at: 0, promise: null };
+// After starting or stopping something, the cached snapshot is stale.
+export function invalidateProcessTable() { tableCache = { at: 0, promise: null }; }
 export function processTable() {
   if (tableCache.promise && Date.now() - tableCache.at < 1000) return tableCache.promise;
   tableCache = { at: Date.now(), promise: IS_WIN ? readTasklist() : readPs() };

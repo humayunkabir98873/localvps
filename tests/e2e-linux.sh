@@ -75,13 +75,18 @@ check "blank PHP site connects to its database" bash -c "curl -s http://demo.loc
 check "WordPress template" waitjob "$(api -X POST -d '{"name":"blog","template":"wordpress"}' "$A/api/sites" | jobid)"
 check "WordPress redirects to its installer" bash -c "curl -s -o /dev/null -w '%{redirect_url}' http://blog.localhost:8080/ | grep -q wp-admin/install.php"
 check "Laravel template" waitjob "$(api -X POST -d '{"name":"shop","template":"laravel","php":"8.4"}' "$A/api/sites" | jobid)"
-check "Laravel site responds 200" test "$(http_code http://shop.localhost:8080/)" = 200
+# An unknown hostname falls through to the landing page (also 200), so check for the app itself.
+check "Laravel site serves its welcome page" bash -c "curl -s http://shop.localhost:8080/ | grep -qi laravel"
 check "Laravel migrations ran in MariaDB" bash -c "curl -s -H 'x-panel-token: $TOKEN' -H 'content-type: application/json' -d '{\"db\":\"shop_db\",\"sql\":\"SELECT COUNT(*) FROM migrations\"}' $A/api/db/query | grep -q '\[\[3\]\]'"
 check "Next.js template" waitjob "$(api -X POST -d '{"name":"web","template":"nextjs"}' "$A/api/sites" | jobid)"
-check "Next.js site responds 200 through nginx" test "$(http_code http://web.localhost:8080/)" = 200
+check "Next.js site serves through nginx" bash -c "curl -s http://web.localhost:8080/ | grep -q _next/"
 
 log "Security"
-check "MariaDB root rejects an empty password" bash -c "! mariadb -h127.0.0.1 -uroot --password= -e 'select 1' >/dev/null 2>&1"
+check "MariaDB root rejects an empty password over TCP" bash -c "! mariadb --no-defaults -h127.0.0.1 -P3306 -uroot --password= -e 'select 1' >/dev/null 2>&1"
+sql() { # run SQL through the panel's console and print the first cell
+  python3 -c "import json,sys;print(json.dumps({'sql':sys.argv[1]}))" "$1" | api -d @- "$A/api/db/query" | python3 -c "import json,sys;print(json.load(sys.stdin)['results'][0]['rows'][0][0])"
+}
+check "no anonymous or passwordless root accounts" test "$(sql "SELECT COUNT(*) FROM mysql.user WHERE User='' OR (User='root' AND authentication_string='')")" = 0
 check "API rejects requests without the token" test "$(curl -s -o /dev/null -w '%{http_code}' "$A/api/overview")" = 401
 check "terminal shells available (node-pty loads)" bash -c "curl -s -H 'x-panel-token: $TOKEN' $A/api/terminal/shells | grep -q '\"id\"'"
 

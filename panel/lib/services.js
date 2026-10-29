@@ -4,7 +4,7 @@ import { spawn } from 'node:child_process';
 import mysql from 'mysql2/promise';
 import { P } from './paths.js';
 import { getState, saveState, getSecrets, saveSecrets, svcState } from './state.js';
-import { run, runOk, sleep, portFree, waitForPort, processTable, killTree, randomPassword } from './util.js';
+import { run, runOk, sleep, portFree, waitForPort, processTable, invalidateProcessTable, killTree, randomPassword } from './util.js';
 import { writeNginxConfig, writePhpIni, writeMyIni, writeFpmConf, mariadbSocket, phpPortBase } from './config.js';
 import { nodeRuntime } from './tooling.js';
 import { IS_WIN, IS_LINUX } from './platform.js';
@@ -134,9 +134,17 @@ async function secureRoot() {
   const pw = getSecrets().mariadbRoot;
   const c = await mysql.createConnection({ socketPath: mariadbSocket(), user: 'root', password: '' });
   try {
-    await c.query("ALTER USER 'root'@'localhost' IDENTIFIED BY ?", [pw]);
-    for (const host of ['127.0.0.1', '::1']) {
-      await c.query("CREATE USER IF NOT EXISTS 'root'@? IDENTIFIED BY ?", [host, pw]);
+    // Distro installers may already have created root@127.0.0.1, root@::1 and root@<hostname> with no
+    // password, and older ones add anonymous users: password every root account and drop the anonymous ones.
+    const [accounts] = await c.query('SELECT User AS user, Host AS host FROM mysql.user');
+    for (const { host } of accounts.filter((a) => a.user === '')) await c.query("DROP USER ''@?", [host]);
+    const rootHosts = new Set(accounts.filter((a) => a.user === 'root').map((a) => a.host));
+    for (const host of ['localhost', '127.0.0.1', '::1']) {
+      if (!rootHosts.has(host)) await c.query("CREATE USER 'root'@? IDENTIFIED BY ?", [host, pw]);
+      rootHosts.add(host);
+    }
+    for (const host of rootHosts) {
+      await c.query("ALTER USER 'root'@? IDENTIFIED BY ?", [host, pw]);
       await c.query("GRANT ALL PRIVILEGES ON *.* TO 'root'@? WITH GRANT OPTION", [host]);
     }
     await c.query('FLUSH PRIVILEGES');
@@ -296,6 +304,7 @@ export function start(key) {
     }
     Object.assign(s, { desired: 'running', pids, error: null, startedAt: Date.now() });
     saveState();
+    invalidateProcessTable();
   });
 }
 
@@ -308,6 +317,7 @@ export function stop(key, { keepDesired = false } = {}) {
       else if (key === 'mariadb') await stopMariadb(pids);
       else await stopPids(pids);
     }
+    invalidateProcessTable();
     s.pids = [];
     if (!keepDesired) s.desired = 'stopped';
     s.error = null;
