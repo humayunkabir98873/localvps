@@ -70,8 +70,10 @@ check "all services running" python3 -c "import json,sys,urllib.request as u;r=u
 check "services run as the user, not root" bash -c "! ps -o user= -C nginx,mariadbd,php-fpm8.4 | grep -qx root"
 
 log "Sites"
-api -X POST -d '{"name":"demo","template":"blank","createDb":true}' "$A/api/sites" > /dev/null
-check "blank PHP site connects to its database" bash -c "curl -s http://demo.localhost:8080/ | grep -q 'connected ✔'"
+api -X POST -d '{"name":"demo","template":"blank","createDb":true}' "$A/api/sites"; echo
+DEMO=$(curl -s http://demo.localhost:8080/)
+grep -oE 'PHP [0-9.]+ on [A-Za-z]+|connected ✔|not reachable[^<]*|<b>[^<]*</b>[^<]*' <<<"$DEMO" | sed 's/^/    /'
+check "blank PHP site connects to its database" grep -q 'connected ✔' <<<"$DEMO"
 check "WordPress template" waitjob "$(api -X POST -d '{"name":"blog","template":"wordpress"}' "$A/api/sites" | jobid)"
 check "WordPress redirects to its installer" bash -c "curl -s -o /dev/null -w '%{redirect_url}' http://blog.localhost:8080/ | grep -q wp-admin/install.php"
 check "Laravel template" waitjob "$(api -X POST -d '{"name":"shop","template":"laravel","php":"8.4"}' "$A/api/sites" | jobid)"
